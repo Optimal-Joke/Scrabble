@@ -3,6 +3,7 @@
 #include <map>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 int scoreWord(const string word, const string overlappingWordLetters,
@@ -39,6 +40,11 @@ int scoreWord(const string word, const string overlappingWordLetters,
 
 void clearTerminal() { cout << "\033[2J\033[;H"; }
 
+bool compareByScore(const Player &player1, const Player &player2)
+{
+    return player1.getScore() > player2.getScore();
+}
+
 int main()
 {
     clearTerminal();
@@ -58,10 +64,7 @@ int main()
 
     // Push player names into vector
     while (iss >> name)
-    {
-        Player player(name);
-        players.push_back(player);
-    }
+        players.emplace_back(name);
 
     // Prompt to begin game
     cout << "\nScore Keeper is ready! Press ENTER to begin...";
@@ -150,12 +153,10 @@ int main()
     }
 
     // We're in the endgame now
-    cout << "Normal gameplay has now ended. It's time to tally the final scores.\n\n";
-    cout << "If the game ended because there are no remaining tiles and a player emptied their rack,\n";
-    cout << "that player earns the sum of all points on all remaining tiles on their opponents' racks.\n";
-    cout << "The other players then subtract the points of their remaining tiles from their score.\n";
-    cout << "If no player emptied their rack and there are simply no more possible plays,\n";
-    cout << "all players simply subtract the points of their own remaining tiles from their score.\n";
+    clearTerminal();
+    cout << "Normal gameplay has now ended. Score adjustment time!\n\n";
+    cout << "If you have no tiles remaining, add to your score all points on your opponents' remaining tiles.\n";
+    cout << "If you still have tiles, add up the points of your tiles and subtract that from your score.\n\n";
 
     cout << "Enter the score adjustments for each player..." << endl;
     for (auto &player : players)
@@ -177,10 +178,18 @@ int main()
         player.adjustScore(adjustment);
     }
 
-    for (const auto &player : players)
-    {
-        cout << player.getName() << " " << player.getScore() << endl;
-    }
+    // Sort players by score
+    sort(players.begin(), players.end(), Player::compareByScore);
 
-    cout << "Endgame." << endl;
+    // Show results
+    clearTerminal();
+    cout << players[0].getName() << " wins with a final score of " << players[0].getScore() << ". Not bad!" << endl
+         << endl;
+    cout << "Full results:" << endl;
+
+    for (const auto &player : players)
+        cout << player.getName() << " - " << player.getScore() << endl;
+
+    cout << endl
+         << "The game is now over. Goodbye!" << endl;
 }
