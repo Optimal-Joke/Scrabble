@@ -40,11 +40,6 @@ int scoreWord(const string word, const string overlappingWordLetters,
 
 void clearTerminal() { cout << "\033[2J\033[;H"; }
 
-bool compareByScore(const Player &player1, const Player &player2)
-{
-    return player1.getScore() > player2.getScore();
-}
-
 int main()
 {
     clearTerminal();
