@@ -8,12 +8,14 @@ using std::vector;
 class Player
 {
 private:
-    const string name;
+    string name;
     int score;
     vector<string> playedWords;
 
 public:
     Player(string name);
+
+    static bool compareByScore(const Player& player1, const Player& player2);
 
     string getName() const;
     int getScore() const;
