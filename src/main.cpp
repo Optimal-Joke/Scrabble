@@ -1,7 +1,6 @@
 #include "Player.h"
 #include "Scorer.h"
 #include <iostream>
-#include <map>
 #include <sstream>
 #include <vector>
 #include <algorithm>
