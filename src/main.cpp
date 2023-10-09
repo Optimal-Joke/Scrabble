@@ -1,42 +1,11 @@
 #include "Player.h"
+#include "Scorer.h"
 #include <iostream>
 #include <map>
 #include <sstream>
 #include <vector>
 #include <algorithm>
 using namespace std;
-
-int scoreWord(const string word, const string overlappingWordLetters,
-              const string doubleLetters, const string tripleLetters,
-              const bool doubleWord, const bool tripleWord)
-{
-    map<char, int> LETTER_VALUES = {{'a', 1}, {'b', 3}, {'c', 3}, {'d', 2}, {'e', 1}, {'f', 4}, {'g', 2}, {'h', 4}, {'i', 1}, {'j', 8}, {'k', 5}, {'l', 1}, {'m', 3}, {'n', 1}, {'o', 1}, {'p', 3}, {'q', 10}, {'r', 1}, {'s', 1}, {'t', 1}, {'u', 1}, {'v', 4}, {'w', 4}, {'x', 8}, {'y', 4}, {'z', 10}};
-
-    int score = 0;
-
-    for (const auto &letter : word)
-        score += LETTER_VALUES[letter];
-
-    // double letters
-    for (const auto &letter : doubleLetters)
-        score += LETTER_VALUES[letter];
-
-    // triple letters
-    for (const auto &letter : tripleLetters)
-        score += 2 * LETTER_VALUES[letter];
-
-    if (doubleWord)
-        score *= 2;
-
-    if (tripleWord)
-        score *= 3;
-
-    // additional word letters
-    for (const auto &letter : overlappingWordLetters)
-        score += LETTER_VALUES[letter];
-
-    return score;
-}
 
 void clearTerminal() { cout << "\033[2J\033[;H"; }
 
@@ -60,6 +29,9 @@ int main()
     // Push player names into vector
     while (iss >> name)
         players.emplace_back(name);
+
+    // Create word scorer object
+    Scorer scorer;
 
     // Prompt to begin game
     cout << "\nScore Keeper is ready! Press ENTER to begin...";
@@ -117,9 +89,9 @@ int main()
             getline(cin, additionalLetters);
 
             // Score word
-            int wordScore = scoreWord(word, additionalLetters,
-                                      doubleLetters, tripleLetters,
-                                      doubleWord, tripleWord);
+            int wordScore = scorer.scoreWord(word, additionalLetters,
+                                             doubleLetters, tripleLetters,
+                                             doubleWord, tripleWord);
 
             // Check if player played all their tiles
             if (word.length() >= 7)
