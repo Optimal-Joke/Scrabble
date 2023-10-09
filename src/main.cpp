@@ -144,14 +144,31 @@ int main()
         player.adjustScore(adjustment);
     }
 
-    // Sort players by score
+    // Sort players by score and check for tie
     sort(players.begin(), players.end(), Player::compareByScore);
+
+    int highestScore = players[0].getScore();
+    int peopleTied = 0;
+    for (const auto &player : players)
+    {
+        if (player.getScore() < highestScore)
+            break;
+        peopleTied++;
+    }
+    bool isATie = peopleTied > 1;
 
     // Show results
     clearTerminal();
-    cout << players[0].getName() << " wins with a final score of " << players[0].getScore() << ". Not bad!" << endl
-         << endl;
-    cout << "Full results:" << endl;
+    if (isATie)
+    {
+        cout << "It's a tie! Here are the results:" << endl;
+    }
+    else
+    {
+        cout << players[0].getName() << " wins with a final score of " << players[0].getScore() << "!" << endl
+             << endl;
+        cout << "Full results:" << endl;
+    }
 
     for (const auto &player : players)
         cout << player.getName() << " - " << player.getScore() << endl;
